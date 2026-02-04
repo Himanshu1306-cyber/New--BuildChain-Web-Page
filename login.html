@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BuildChain | 3D Secure Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* 3D Scene Setup */
+        body, html {
+            margin: 0; padding: 0; height: 100vh;
+            perspective: 1000px; /* 3D depth create karne ke liye */
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+            background: #000;
+        }
+
+        /* Moving 3D Background */
+        .bg-3d {
+            position: fixed;
+            top: -5%; left: -5%;
+            width: 110%; height: 110%;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), 
+                        url('https://images.unsplash.com/photo-1541888946425-d81bb1930060?q=80&w=2070');
+            background-size: cover;
+            background-position: center;
+            transform: translateZ(-100px) scale(1.2); /* Depth effect */
+            z-index: -1;
+        }
+
+        /* Container with Floating Animation */
+        .login-wrapper {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform-style: preserve-3d;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 50px 40px;
+            width: 380px;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            /* 3D Tilt Effect Animation */
+            animation: float 6s ease-in-out infinite;
+            transform: translateZ(50px);
+            border-top: 1px solid rgba(255,255,255,0.4);
+            border-left: 1px solid rgba(255,255,255,0.4);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotateX(2deg) rotateY(-2deg); }
+            50% { transform: translateY(-20px) rotateX(-2deg) rotateY(2deg); }
+        }
+
+        h2 { 
+            font-family: 'Orbitron', sans-serif;
+            color: #f39c12; margin-bottom: 30px; 
+            letter-spacing: 3px; font-weight: 700;
+            text-shadow: 0 5px 15px rgba(243, 156, 18, 0.3);
+        }
+
+        .input-group { text-align: left; margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-size: 13px; color: #f39c12; font-weight: 600; }
+        
+        input, select {
+            width: 100%; padding: 12px; 
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255,255,255,0.1); 
+            border-radius: 10px;
+            color: white; outline: none; box-sizing: border-box;
+            transition: 0.4s;
+        }
+
+        input:focus { 
+            border-color: #f39c12; 
+            background: rgba(0,0,0,0.5);
+            box-shadow: 0 0 15px rgba(243, 156, 18, 0.2);
+        }
+
+        .login-btn {
+            width: 100%; padding: 15px; background: linear-gradient(45deg, #f39c12, #e67e22);
+            border: none; border-radius: 10px; color: white;
+            font-weight: bold; cursor: pointer; transition: 0.3s;
+            font-size: 16px; margin-top: 15px;
+            box-shadow: 0 10px 20px rgba(230, 126, 34, 0.3);
+        }
+
+        .login-btn:hover { 
+            transform: scale(1.05) translateY(-3px); 
+            box-shadow: 0 15px 25px rgba(230, 126, 34, 0.5);
+        }
+
+        .back-link { 
+            display: inline-block; margin-top: 30px; color: #ccc; 
+            text-decoration: none; font-size: 13px; transition: 0.3s;
+        }
+        .back-link:hover { color: #f39c12; }
+    </style>
+</head>
+<body>
+
+    <div class="bg-3d"></div>
+
+    <div class="login-wrapper">
+        <div class="login-container">
+            <h2>BUILDCHAIN</h2>
+            
+            <form id="loginForm">
+                <div class="input-group">
+                    <label>Email ID</label>
+                    <input type="email" id="email" placeholder="Enter email" required>
+                </div>
+                
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+                
+                <div class="input-group">
+                    <label>Role</label>
+                    <select id="role">
+                        <option value="contractor">Contractor</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="login-btn">Launch Portal</button>
+            </form>
+            <p style="text-align: center; color: #ccc; margin-top: 15px; font-size: 14px;">
+    New Contractor? <a href="signup.html" style="color: #f39c12; text-decoration: none; font-weight: bold;">Create Account</a>
+</p>
+
+            <a href="index.html" class="back-link">← Return to Main Page</a>
+        </div>
+    </div>
+
+    <script type="module" src="auth.js"></script>
+</body>
+</html>

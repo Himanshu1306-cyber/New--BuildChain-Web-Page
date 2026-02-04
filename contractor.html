@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Contractor Portal | BuildChain</title>
+    <style>
+        body {
+            margin: 0; padding: 0; min-height: 100vh;
+            font-family: 'Segoe UI', sans-serif;
+            /* Real Construction Background with Dark Overlay */
+            background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), 
+                        url('https://cdn.cpdonline.co.uk/wp-content/uploads/2023/03/04151341/Everything-you-need-to-know-about-Construction-Site-Safety-750x500.jpg');
+            background-size: cover; background-position: center; background-attachment: fixed;
+            display: flex; flex-direction: column; align-items: center; color: white;
+        }
+
+        /* Home Button Style */
+        .home-btn {
+            position: absolute; top: 20px; left: 20px; 
+            color: white; text-decoration: none; 
+            background: rgba(255,255,255,0.15); 
+            padding: 10px 20px; border-radius: 5px; 
+            backdrop-filter: blur(5px); font-weight: bold; 
+            border: 1px solid rgba(255,255,255,0.3);
+            transition: 0.3s;
+        }
+        .home-btn:hover { background: rgba(255,255,255,0.3); }
+
+        /* Crystal Glass Panel */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px; padding: 30px;
+            width: 450px; margin-top: 80px; text-align: center;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        h2 { color: #f39c12; margin-bottom: 25px; letter-spacing: 1px; }
+        
+        .form-group { text-align: left; margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-size: 14px; color: #ddd; }
+        
+        input {
+            width: 100%; padding: 12px; background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.2); border-radius: 8px;
+            color: white; outline: none; box-sizing: border-box;
+        }
+        input:focus { border-color: #f39c12; }
+
+        .submit-btn {
+            width: 100%; padding: 15px; background: #e67e22;
+            border: none; border-radius: 8px; color: white;
+            font-weight: bold; cursor: pointer; transition: 0.3s;
+            font-size: 16px;
+        }
+        .submit-btn:hover { background: #d35400; transform: translateY(-2px); }
+
+        #logoutBtn {
+            background: #c0392b; border: none; color: white; 
+            cursor: pointer; padding: 10px 25px; border-radius: 5px; 
+            font-weight: bold; margin-top: 20px; transition: 0.3s;
+        }
+        #logoutBtn:hover { background: #a93226; }
+
+        /* History Table Container */
+        .history-container {
+            width: 90%; max-width: 1100px; margin: 50px 0;
+            background: rgba(0, 0, 0, 0.6); border-radius: 12px; 
+            padding: 25px; border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { background: #f39c12; color: #1a1a1a; padding: 15px; text-align: left; border-radius: 4px; }
+        td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 14px; }
+        tr:hover { background: rgba(255,255,255,0.05); }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="home-btn">🏠 Home</a>
+
+    <div class="glass-panel">
+    <h2>🏗️ Submit Project Work</h2>
+    
+    <form id="projectForm">
+        <div class="form-group">
+            <label>Project Name</label>
+            <input type="text" id="projectName" placeholder="Enter Project Name" required>
+        </div>
+
+        <div class="form-group">
+            <label>Material Details</label>
+            <input type="text" id="materialInfo" placeholder="e.g. 100 Tons Steel" required>
+        </div>
+
+        <div class="form-group">
+            <label>Workers Present</label>
+            <input type="number" id="workerCount" placeholder="Enter number of workers" required>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submitProjectBtn">Lock on Blockchain & Submit</button>
+    </form>
+
+    <button id="logoutBtn" class="logout-btn">Logout</button>
+</div>
+
+    <div class="history-container">
+        <h3>My Submission History</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date & Time</th>
+                    <th>Project</th>
+                    <th>Material</th>
+                    <th>Workers</th>
+                    <th>Blockchain Proof</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="historyBody">
+                </tbody>
+        </table>
+    </div>
+
+    <script type="module" src="contractor.js"></script>
+</body>
+</html>
