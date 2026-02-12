@@ -99,6 +99,17 @@
             <label>Workers Present</label>
             <input type="number" id="workerCount" placeholder="Enter number of workers" required>
         </div>
+        <div class="form-group">
+    <label>Project Milestone (%)</label>
+    <select id="milestoneStatus" required>
+        <option value="" disabled selected>Select Progress</option>
+        <option valuse="0">0% - project initiated</option>
+        <option value="25">25% - Phase 1</option>
+        <option value="50">50% - Phase 2</option>
+        <option value="75">75% - Phase 3</option>
+        <option value="100">100% - Completed</option>
+    </select>
+</div>
 
         <button type="submit" class="submit-btn" id="submitProjectBtn">Lock on Blockchain & Submit</button>
     </form>
@@ -115,6 +126,7 @@
                     <th>Project</th>
                     <th>Material</th>
                     <th>Workers</th>
+                    <th>Milestone</th>
                     <th>Blockchain Proof</th>
                     <th>Status</th>
                 </tr>
@@ -123,6 +135,26 @@
                 </tbody>
         </table>
     </div>
+  
+<div id="updateMilestoneModal" class="glass-panel" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); z-index:1000; width:300px; padding:20px; border:1px solid #f39c12;">
+    <h3 style="color:#f39c12; margin-bottom:15px;">Update Progress</h3>
+    
+    <input type="hidden" id="editDocId"> <div class="form-group">
+        <label>Current Milestone (%)</label>
+        <select id="newMilestoneStatus" required>
+            <option value="0">0% - Project Initiated</option>
+            <option value="25">25% - Phase 1</option>
+            <option value="50">50% - Phase 2</option>
+            <option value="75">75% - Phase 3</option>
+            <option value="100">100% - Completed</option>
+        </select>
+    </div>
+    
+    <button class="submit-btn" onclick="saveNewProgress()" style="margin-top:10px;">Save Changes</button>
+    <button class="logout-btn" onclick="closeUpdateModal()" style="margin-top:5px; background:#444;">Cancel</button>
+</div>
+
+<div id="modalOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:999;"></div>
 
     <script type="module" src="contractor.js"></script>
 </body>
