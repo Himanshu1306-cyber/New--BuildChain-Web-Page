@@ -23,11 +23,13 @@ async function loadProjects() {
     tableBody.innerHTML = "";
     const projectNames = [];
     const workerCounts = [];
+    const projectProgress = [];
 
     querySnapshot.forEach((doc) => {
         const data = doc.data();
         projectNames.push(data.projectName);
         workerCounts.push(data.workers || 0);
+        projectProgress.push(data.milestone || 0);
 
       // admin.js ke loadProjects function ke loop ke andar:
 const d = doc.data();
@@ -39,55 +41,81 @@ const row = `
         <td>${d.projectName}</td>
         <td>${d.workers || 0}</td>
         <td>
-           
-            <button class="hash-btn" 
-                onclick="openModal('${d.projectName}', '${d.materialInfo}', ${d.workers}, '${d.blockchainHash}', '${d.previousHash}', '${d.contractorEmail}')">
-                ${d.blockchainHash.substring(0,8)}...
-            </button>
-       
+            <div style="width: 80px; background: #222; border-radius: 10px; height: 8px; border: 1px solid #444; margin-bottom: 4px;">
+                <div style="width: ${d.milestone || 0}%; background: #f39c12; height: 100%; border-radius: 10px;"></div>
+            </div>
+            <span style="font-size: 10px; color: #f39c12;">${d.milestone || 0}% Complete</span>
+        </td>
+        <td>
+          
+<button class="hash-btn" onclick="openModal('${d.projectName}', '${d.materialInfo}', '${d.workers}', '${d.blockchainHash}', '${d.previousHash}', '${d.contractorEmail}')">
+    ${d.blockchainHash ? d.blockchainHash.substring(0,8) : '0x...'}...
+</button>
         </td>
         <td>
             <button class="approve-btn" 
-                onclick="verifyProject('${docId}')" 
-                style="background: ${isVerified ? '#2ecc71' : '#f39c12'}; cursor: ${isVerified ? 'default' : 'pointer'}"
+                onclick="verifyProject('${docId}')"
+                style="background: ${isVerified ? '#2ecc71' : '#f39c12'}; cursor: ${isVerified ? 'default' : 'pointer'};"
                 ${isVerified ? 'disabled' : ''}>
                 ${isVerified ? 'Verified ✓' : 'Verify'}
             </button>
         </td>
-    </tr>`;
+    </tr>
+`;
 tableBody.innerHTML += row;
     });
 
-    renderChart(projectNames, workerCounts);
+    renderChart(projectNames, projectProgress);
 }
 
 // Modal kholne ka function
 // admin.js mein openModal ko aise update karein
-window.openModal = (name, mat, work, hash, prev, email) => { // 'email' add kiya
+// admin.js -> Line 72 ke paas
+window.openModal = (name, mat, work, hash, prev, email) => {
     document.getElementById("m-project").innerText = name;
     document.getElementById("m-material").innerText = mat;
     document.getElementById("m-workers").innerText = work;
     document.getElementById("m-hash").innerText = hash;
-    document.getElementById("m-prev").innerText = prev;
-    document.getElementById("m-email").innerText = email || "N/A"; // Email set kiya
+    
+    // Ye do lines fix karengi jo missing tha:
+    document.getElementById("m-prev").innerText = prev || "First Block"; 
+    document.getElementById("m-email").innerText = email || "Not Available";
+
     document.getElementById("detailsModal").style.display = "flex";
 };
 // Chart.js Setup
+// admin.js -> Line 82
 function renderChart(labels, data) {
     const ctx = document.getElementById('workerChart').getContext('2d');
-    if (workerChartInstance) workerChartInstance.destroy();
+    
+    // Purane chart instance ko destroy karna zaroori hai
+    if (window.workerChartInstance) {
+        window.workerChartInstance.destroy();
+    }
 
-    workerChartInstance = new Chart(ctx, {
+    window.workerChartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: labels,
             datasets: [{
-                label: 'Workers count',
-                data: data,
-                backgroundColor: '#f39c12'
+                label: 'Project Completion (%)', // Label badal dein
+                data: data, // Ab yahan milestone ka data aayega
+                backgroundColor: '#f39c12',
+                borderRadius: 5
             }]
         },
-        options: { responsive: true, scales: { y: { beginAtZero: true } } }
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100, // Kyunki progress 100% tak hoti hai
+                    ticks: {
+                        callback: function(value) { return value + '%'; }
+                    }
+                }
+            }
+        }
     });
 }
 // --- Isko Line 68 ke niche add karein ---
