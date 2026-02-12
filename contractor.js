@@ -1,6 +1,6 @@
 import { auth, db } from "./firebase.js";
 import { signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { collection, addDoc, getDocs, where, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { collection, addDoc, getDocs, where, query, orderBy, limit, serverTimestamp, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 // --- LOGOUT LOGIC ---
 const logoutBtn = document.getElementById("logoutBtn");
@@ -23,8 +23,9 @@ const handleSubmit = async (e) => {
     const projectName = document.getElementById("projectName").value;
     const materialInfo = document.getElementById("materialInfo").value;
     const workerCount = document.getElementById("workerCount").value;
+    const milestone = document.getElementById('milestoneStatus').value; // Naya milestone read karein
 
-    if(!projectName || !materialInfo || !workerCount) {
+    if(!projectName || !materialInfo || !workerCount || !milestone) {
         alert("Saari details bhariye!");
         return;
     }
@@ -49,6 +50,7 @@ const handleSubmit = async (e) => {
             projectName: projectName,
             materialInfo: materialInfo,
             workers: parseInt(workerCount),
+            milestone: parseInt(milestone), 
             blockchainHash: txHash,
             previousHash: prevHash,
             contractorEmail: auth.currentUser.email,
@@ -89,21 +91,34 @@ const q = query(
     let rows = "";
 
     querySnapshot.forEach((doc) => {
-        const d = doc.data();
-        const date = d.timestamp ? d.timestamp.toDate().toLocaleString() : "Pending...";
-        
-        rows += `
-            <tr>
-                <td>${date}</td>
-                <td>${d.projectName}</td>
-                <td>${d.materialInfo}</td>
-                <td>${d.workers || 0}</td>
-                <td style="font-family: monospace; font-size: 12px;">${d.blockchainHash.substring(0, 10)}...</td>
-                <td><span class="status-badge ${d.status.toLowerCase()}">${d.status}</span></td>
-            </tr>
-        `;
-    });
+    const d = doc.data();
+    const date = d.timestamp ? d.timestamp.toDate().toLocaleString() : "Pending...";
+    
+    // Milestone ke liye ek chota progress bar style
+    const milestoneUI = `
+        <div style="width: 100%; background: #333; border-radius: 10px; height: 10px; margin-top: 5px;">
+            <div style="width: ${d.milestone}%; background: #ffa500; height: 100%; border-radius: 10px;"></div>
+        </div>
+        <small>${d.milestone}% Done</small>
+    `;
 
+    rows += `
+        <tr>
+            <td>${date}</td>
+            <td>${d.projectName || 'Jasper'}</td>
+            <td>${d.materialInfo}</td>
+            <td>${d.workerCount}</td>
+            <td>${milestoneUI}</td> <td>${d.hash ? d.hash.substring(0, 10) + '...' : '0xba27020e...'}</td>
+            <td>${d.status || 'Verified'}</td>
+            <td>
+        <a href="#" onclick="openUpdateModal('${doc.id}', '${d.milestone || 0}')" style="color: #f39c12; text-decoration: none; font-weight: bold;">
+            Update ✏️
+        </a>
+    </td>
+        </tr>
+    `;
+});
+   
     historyTable.innerHTML = rows;
 }
 
@@ -113,3 +128,37 @@ auth.onAuthStateChanged((user) => {
         loadMySubmissions();
     }
 });
+// Modal kholne ke liye function
+window.openUpdateModal = (id, currentMilestone) => {
+    document.getElementById('editDocId').value = id;
+    document.getElementById('newMilestoneStatus').value = currentMilestone;
+    document.getElementById('updateMilestoneModal').style.display = 'block';
+    document.getElementById('modalOverlay').style.display = 'block';
+};
+
+// Modal band karne ke liye function
+window.closeUpdateModal = () => {
+    document.getElementById('updateMilestoneModal').style.display = 'none';
+    document.getElementById('modalOverlay').style.display = 'none';
+};
+
+// Firestore mein data update karne ke liye function
+window.saveNewProgress = async () => {
+    const docId = document.getElementById('editDocId').value;
+    const newProgress = document.getElementById('newMilestoneStatus').value;
+
+    try {
+        // Firebase Firestore update command
+        const projectRef = doc(db, "projects", docId);
+        await updateDoc(projectRef, {
+            milestone: parseInt(newProgress),
+            lastUpdated: serverTimestamp() // Track karne ke liye kab update hua
+        });
+
+        alert("Progress Updated! Admin ab naya status dekh sakta hai.");
+        window.location.reload(); // Page refresh karke changes dikhane ke liye
+    } catch (error) {
+        console.error("Update Error:", error);
+        alert("Update fail ho gaya: " + error.message);
+    }
+};
