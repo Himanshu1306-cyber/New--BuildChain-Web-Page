@@ -3,144 +3,156 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BuildChain | 3D Secure Login</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>BuildChain | Live Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        
-        body, html {
-            margin: 0; padding: 0; height: 100vh;
-            perspective: 1000px; 
-            overflow: hidden;
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
             font-family: 'Poppins', sans-serif;
-            background: #000;
-        }
-
-        
-        .bg-3d {
-            position: fixed;
-            top: -5%; left: -5%;
-            width: 110%; height: 110%;
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), 
-                        url('https://images.unsplash.com/photo-1541888946425-d81bb1930060?q=80&w=2070');
+            /* Wahi background jo aapne baki pages pe lagaya hai */
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.8)), 
+                        url('https://t3.ftcdn.net/jpg/01/93/54/54/360_F_193545415_6pzIxsRxtPenzgxfVqtuXCG2BE8vitif.jpg');
             background-size: cover;
             background-position: center;
-            transform: translateZ(-100px) scale(1.2); 
-            z-index: -1;
+            background-attachment: fixed;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin-top: 50px;
+            padding-bottom: 50px;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            color: #f39c12;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+        .back-btn:hover { transform: translateX(-5px); color: white; }
+
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            color: white;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
        
-        .login-wrapper {
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transform-style: preserve-3d;
+        .table-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            overflow-x: auto;
         }
 
-        .login-container {
-            background: rgba(255, 255, 255, 0.07);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 25px;
-            padding: 50px 40px;
-            width: 380px;
-            text-align: center;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-            
-            animation: float 6s ease-in-out infinite;
-            transform: translateZ(50px);
-            border-top: 1px solid rgba(255,255,255,0.4);
-            border-left: 1px solid rgba(255,255,255,0.4);
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotateX(2deg) rotateY(-2deg); }
-            50% { transform: translateY(-20px) rotateX(-2deg) rotateY(2deg); }
-        }
-
-        h2 { 
+        th {
+            background-color: #f39c12; /* Construction Orange */
+            color: #000;
+            padding: 15px;
+            text-align: left;
             font-family: 'Orbitron', sans-serif;
-            color: #f39c12; margin-bottom: 30px; 
-            letter-spacing: 3px; font-weight: 700;
-            text-shadow: 0 5px 15px rgba(243, 156, 18, 0.3);
+            font-size: 14px;
+            letter-spacing: 1px;
         }
 
-        .input-group { text-align: left; margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-size: 13px; color: #f39c12; font-weight: 600; }
-        
-        input, select {
-            width: 100%; padding: 12px; 
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255,255,255,0.1); 
-            border-radius: 10px;
-            color: white; outline: none; box-sizing: border-box;
-            transition: 0.4s;
+        th:first-child { border-radius: 12px 0 0 12px; }
+        th:last-child { border-radius: 0 12px 12px 0; }
+
+        td {
+            padding: 20px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 15px;
         }
 
-        input:focus { 
-            border-color: #f39c12; 
-            background: rgba(0,0,0,0.5);
-            box-shadow: 0 0 15px rgba(243, 156, 18, 0.2);
+        tr:hover {
+            background: rgba(255, 255, 255, 0.03);
         }
 
-        .login-btn {
-            width: 100%; padding: 15px; background: linear-gradient(45deg, #f39c12, #e67e22);
-            border: none; border-radius: 10px; color: white;
-            font-weight: bold; cursor: pointer; transition: 0.3s;
-            font-size: 16px; margin-top: 15px;
-            box-shadow: 0 10px 20px rgba(230, 126, 34, 0.3);
+        .hash-link {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .hash-link:hover { text-decoration: underline; }
+
+        .status-approved {
+            color: #2ecc71;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 13px;
         }
 
-        .login-btn:hover { 
-            transform: scale(1.05) translateY(-3px); 
-            box-shadow: 0 15px 25px rgba(230, 126, 34, 0.5);
+        /* Empty state styling */
+        #ledgerBody:empty::after {
+            content: "Waiting for blockchain data...";
+            display: block;
+            padding: 40px;
+            text-align: center;
+            color: #888;
         }
 
-        .back-link { 
-            display: inline-block; margin-top: 30px; color: #ccc; 
-            text-decoration: none; font-size: 13px; transition: 0.3s;
-        }
-        .back-link:hover { color: #f39c12; }
     </style>
 </head>
 <body>
 
-    <div class="bg-3d"></div>
+    <div class="container">
+        <a href="index.html" class="back-btn">← Back to Home</a>
+        <h2>Live Construction Ledger</h2>
 
-    <div class="login-wrapper">
-        <div class="login-container">
-            <h2>BUILDCHAIN</h2>
-            
-            <form id="loginForm">
-                <div class="input-group">
-                    <label>Email ID</label>
-                    <input type="email" id="email" placeholder="Enter email" required>
-                </div>
-                
-                <div class="input-group">
-                    <label>Password</label>
-                    <input type="password" id="password" placeholder="••••••••" required>
-                </div>
-                
-                <div class="input-group">
-                    <label>Role</label>
-                    <select id="role">
-                        <option value="contractor">Contractor</option>
-                        <option value="admin">Admin</option>
-                    </select>
-                </div>
-                
-                <button type="submit" class="login-btn">Launch Portal</button>
-            </form>
-            <p style="text-align: center; color: #ccc; margin-top: 15px; font-size: 14px;">
-    New Contractor? <a href="signup.html" style="color: #f39c12; text-decoration: none; font-weight: bold;">Create Account</a>
-</p>
+        <div class="table-container">
+            <table>
+    <thead>
+        <tr>
+            <th>Time</th>
+            <th>Project</th>
+            <th>Material</th>
+            <th>Workers</th> 
+            <th>Progress (Milestone)</th>
+            <th>Blockchain Proof</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody id="publicLedgerBody">
+        </tbody>
+</table>
 
-            <a href="index.html" class="back-link">← Return to Main Page</a>
-        </div>
+<div id="publicModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; align-items:center; justify-content:center;">
+    <div style="background:#222; padding:30px; border-radius:15px; border:1px solid #f39c12; max-width:500px; width:90%;">
+        <h3 style="color:#f39c12;">🔗 Block Certificate</h3>
+        <hr style="border:0.5px solid #444;">
+        <p><b>Project:</b> <span id="p-project"></span></p>
+        <p><b>Material:</b> <span id="p-material"></span></p>
+        <p><b>Workers:</b> <span id="p-workers"></span></p>
+        <p><b>Hash:</b> <br><span id="p-hash" style="word-break:break-all; font-family:monospace; color:#3498db;"></span></p>
+        <p><b>Previous Hash:</b> <br><span id="p-prev" style="word-break:break-all; font-family:monospace; color:#888; font-size: 11px;"></span></p>
+<p><b>Submitted By:</b> <span id="p-email" style="color:#3498db;"></span></p>
+        <button onclick="closePublicModal()" style="background:#f39c12; border:none; padding:10px 20px; cursor:pointer; margin-top:10px; border-radius:5px;">Close</button>
+    </div>
+</div>
     </div>
 
-    <script type="module" src="auth.js"></script>
+    <script type="module" src="dashboard.js"></script>
 </body>
 </html>
